@@ -138,6 +138,7 @@ jobs:
           SORTED=$(echo "$PACKAGES" | jq -c 'sort_by(.dir |
             if . == "state" or . == "screensets" or . == "api" or . == "i18n" then 1
             elif . == "framework" then 2
+            elif . == "telemetry" then 3
             elif . == "react" then 3
             elif . == "studio" then 4
             else 5 end)')

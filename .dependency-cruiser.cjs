@@ -44,6 +44,20 @@ module.exports = {
       comment: 'LAYER VIOLATION: React (L3) cannot import SDK (L1) directly. Use @gears-frontx/framework re-exports.'
     },
     {
+      name: 'gear-core-no-package-imports',
+      severity: 'error',
+      from: { path: '^packages/telemetry/src/(?!plugin/)' },
+      to: { path: '^packages/(state|screensets|api|i18n|framework|react)/' },
+      comment: 'GEAR VIOLATION: the gear core is L1-pure. Only src/plugin may import @gears-frontx/framework.'
+    },
+    {
+      name: 'gear-plugin-no-react',
+      severity: 'error',
+      from: { path: '^packages/telemetry/src/' },
+      to: { path: '^packages/react/' },
+      comment: 'GEAR VIOLATION: gears are headless. Neither the core nor the plugin adapter can import @gears-frontx/react.'
+    },
+    {
       name: 'packages-no-src-import',
       severity: 'error',
       from: { path: '^packages/' },

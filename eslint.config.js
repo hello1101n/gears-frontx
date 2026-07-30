@@ -100,6 +100,91 @@ export default [
     },
   },
 
+  // Gear package: browser SDK whose wire format and hook contract are typed against consumer
+  // data, so `unknown` and a few `any` sites are load-bearing.
+  // Layer enforcement is path-scoped: the core is L1-pure, only src/plugin may reach the framework.
+  {
+    files: ['packages/telemetry/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@gears-frontx/*'],
+              message:
+                'GEAR VIOLATION: the gear core cannot import @gears-frontx packages. Only src/plugin may import @gears-frontx/framework.',
+            },
+            {
+              group: ['react', 'react-dom', 'react/*'],
+              message:
+                'GEAR VIOLATION: gears are framework-agnostic. They cannot import React.',
+            },
+            {
+              group: ['@gears-frontx/*/src/**'],
+              message:
+                'MONOREPO VIOLATION: Import from package root, not internal paths.',
+            },
+            {
+              group: ['@/*'],
+              message:
+                'PACKAGE VIOLATION: Use relative imports within packages.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // Gear plugin adapter: the one subtree allowed to reach the framework. Still headless.
+  {
+    files: ['packages/telemetry/src/plugin/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@gears-frontx/react', '@gears-frontx/react/*'],
+              message:
+                'GEAR VIOLATION: the plugin adapter is headless. It cannot import @gears-frontx/react.',
+            },
+            {
+              group: ['react', 'react-dom', 'react/*'],
+              message:
+                'GEAR VIOLATION: the plugin adapter is headless. It cannot import React.',
+            },
+            {
+              group: ['@gears-frontx/*/src/**'],
+              message:
+                'MONOREPO VIOLATION: Import from package root, not internal paths.',
+            },
+            {
+              group: ['@/*'],
+              message:
+                'PACKAGE VIOLATION: Use relative imports within packages.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // The envelope builders rewrite each record field in place to match the collector's wire format,
+  // and the hooks manager dispatches a variadic tuple through a key-indexed handler map.
+  {
+    files: [
+      'packages/telemetry/src/managers/events.ts',
+      'packages/telemetry/src/managers/hooks.ts',
+    ],
+    rules: {
+      '@typescript-eslint/ban-ts-comment': 'off',
+    },
+  },
+
   // Framework package: Allow unknown/object types (wraps SDK with plugin architecture)
   // Layer enforcement: Framework cannot import @gears-frontx/react or React
   // BUT keep Flux rules for effects files
@@ -246,6 +331,11 @@ export default [
               group: ['@gears-frontx/i18n', '@gears-frontx/i18n/*'],
               message:
                 'REACT VIOLATION: Import from @gears-frontx/framework instead.',
+            },
+            {
+              group: ['@gears-frontx/telemetry', '@gears-frontx/telemetry/*'],
+              message:
+                'REACT VIOLATION: gears are opt-in capabilities. An app wires @gears-frontx/telemetry/plugin itself.',
             },
             {
               group: ['@gears-frontx/*/src/**'],

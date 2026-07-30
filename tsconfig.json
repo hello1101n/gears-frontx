@@ -2,6 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./packages/cli/template-sources/project/configs/tsconfig.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -17,6 +19,9 @@
       "@gears-frontx/i18n/*": ["./packages/i18n/src/*"],
       "@gears-frontx/framework": ["./packages/framework/src/index.ts"],
       "@gears-frontx/framework/*": ["./packages/framework/src/*"],
+      "@gears-frontx/telemetry": ["./packages/telemetry/src/index.ts"],
+      "@gears-frontx/telemetry/plugin": ["./packages/telemetry/src/plugin/index.ts"],
+      "@gears-frontx/telemetry/*": ["./packages/telemetry/src/*"],
       "@gears-frontx/react": ["./packages/react/src/index.ts"],
       "@gears-frontx/react/*": ["./packages/react/src/*"],
       "@gears-frontx/studio": ["./packages/studio/src/index.ts"],

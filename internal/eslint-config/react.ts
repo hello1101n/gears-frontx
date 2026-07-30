@@ -50,6 +50,10 @@ export const reactConfig: ConfigArray = [
               group: ['@gears-frontx/api', '@gears-frontx/api/*'],
               message: 'REACT VIOLATION: Import from @gears-frontx/framework instead. React package uses framework re-exports.',
             },
+            {
+              group: ['@gears-frontx/telemetry', '@gears-frontx/telemetry/*'],
+              message: 'REACT VIOLATION: gears are opt-in capabilities. An app wires @gears-frontx/telemetry/plugin itself; the React layer does not depend on it.',
+            },
           ],
         },
       ],

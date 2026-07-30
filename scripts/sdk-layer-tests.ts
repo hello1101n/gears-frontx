@@ -27,6 +27,7 @@ interface PackageJson {
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;
+  peerDependenciesMeta?: Record<string, { optional?: boolean }>;
 }
 
 const colors = {
@@ -73,6 +74,10 @@ const ALLOWED_SDK_DEPS = [
   '@gears-frontx/i18n',
   '@gears-frontx/screensets', // Screenset contracts and registry
 ];
+
+// Gear packages: capability SDKs with an L1-pure core and a ./plugin entry that adapts to L2.
+// The framework may appear only as an optional peer dependency, never as a hard dependency.
+const GEAR_PACKAGES = ['telemetry'];
 
 // Deprecated packages that should not be imported
 const DEPRECATED_PACKAGES = [
@@ -175,6 +180,64 @@ function testReactOnlyFrameworkDep(): TestResult {
 }
 
 /**
+ * Test: Gear packages keep their core L1-pure and the framework peer optional
+ */
+function testGearPackages(): TestResult[] {
+  const results: TestResult[] = [];
+
+  for (const pkgName of GEAR_PACKAGES) {
+    const label = `Gear @gears-frontx/${pkgName}`;
+    const pkg = readPackageJson(join(process.cwd(), 'packages', pkgName));
+
+    if (!pkg) {
+      results.push({
+        name: `${label}: Core has zero @gears-frontx deps`,
+        passed: true,
+        message: 'Package not found',
+        skipped: true,
+      });
+      continue;
+    }
+
+    const hardDeps = Object.keys(pkg.dependencies ?? {}).filter((dep) =>
+      dep.startsWith('@gears-frontx/')
+    );
+    results.push({
+      name: `${label}: Core has zero @gears-frontx deps`,
+      passed: hardDeps.length === 0,
+      message: hardDeps.length === 0
+        ? 'No @gears-frontx dependencies'
+        : `Found @gears-frontx dependencies: ${hardDeps.join(', ')}`,
+    });
+
+    const peers = Object.keys(pkg.peerDependencies ?? {}).filter((dep) =>
+      dep.startsWith('@gears-frontx/')
+    );
+    const invalidPeers = peers.filter((dep) => dep !== '@gears-frontx/framework');
+    results.push({
+      name: `${label}: Framework is the only @gears-frontx peer`,
+      passed: invalidPeers.length === 0,
+      message: invalidPeers.length === 0
+        ? `Peers: ${peers.join(', ') || 'none'}`
+        : `Invalid peers: ${invalidPeers.join(', ')}`,
+    });
+
+    if (peers.includes('@gears-frontx/framework')) {
+      const optional = pkg.peerDependenciesMeta?.['@gears-frontx/framework']?.optional === true;
+      results.push({
+        name: `${label}: Framework peer is optional`,
+        passed: optional,
+        message: optional
+          ? 'Declared optional'
+          : 'Framework peer must be declared optional so the core stays standalone',
+      });
+    }
+  }
+
+  return results;
+}
+
+/**
  * Test: No package depends on deprecated packages
  */
 function testNoDeprecatedDependencies(): TestResult[] {
@@ -235,7 +298,7 @@ function testLayeredConfigsExist(): TestResult[] {
 
   // Depcruise config package (in internal/)
   const depcruiseConfigPath = join(process.cwd(), 'internal', 'depcruise-config');
-  const depcruiseConfigFiles = ['base.cjs', 'sdk.cjs', 'framework.cjs', 'react.cjs', 'screenset.cjs'];
+  const depcruiseConfigFiles = ['base.cjs', 'sdk.cjs', 'framework.cjs', 'react.cjs', 'screenset.cjs', 'gear.cjs'];
 
   for (const file of depcruiseConfigFiles) {
     const filePath = join(depcruiseConfigPath, file);
@@ -263,6 +326,7 @@ function runSdkLayerTests(): { results: TestResult[]; summary: { passed: number;
   allResults.push(...testSdkZeroDependencies());
   allResults.push(testFrameworkOnlySdkDeps());
   allResults.push(testReactOnlyFrameworkDep());
+  allResults.push(...testGearPackages());
   allResults.push(...testNoDeprecatedDependencies());
   allResults.push(...testLayeredConfigsExist());
 
@@ -309,4 +373,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-export { runSdkLayerTests, testSdkZeroDependencies, testFrameworkOnlySdkDeps, testReactOnlyFrameworkDep };
+export {
+  runSdkLayerTests,
+  testSdkZeroDependencies,
+  testFrameworkOnlySdkDeps,
+  testReactOnlyFrameworkDep,
+  testGearPackages,
+};

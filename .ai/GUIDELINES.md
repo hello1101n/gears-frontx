@@ -20,6 +20,9 @@
 - packages/api -> .ai/targets/API.md
 - packages/i18n -> .ai/targets/I18N.md
 
+### Gear Layer - L1-pure core plus an optional L2 adapter
+- packages/telemetry -> .ai/targets/TELEMETRY.md
+
 ### Framework Layer (L2) - Depends on SDK packages
 - packages/framework -> .ai/targets/FRAMEWORK.md
 
@@ -83,7 +86,7 @@
   - No console errors or missing registrations.
 
 ## BLOCKLIST
-- Telemetry or tracking code.
+- Ad-hoc tracking code. Use @gears-frontx/telemetry.
 - "as unknown as" type casts.
 - unknown in public type definitions.
 - eslint-disable comments.

@@ -1,0 +1,68 @@
+{
+  "name": "@gears-frontx/telemetry",
+  "version": "0.1.0",
+  "description": "Browser telemetry SDK for HAI3 - session tracking, device and navigation context, DOM autocapture, and a plugin system",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./plugin": {
+      "types": "./dist/plugin/index.d.ts",
+      "import": "./dist/plugin/index.js",
+      "require": "./dist/plugin/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "CLAUDE.md",
+    "llms.txt",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "bowser": "2.11.0"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.10.6",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.2",
+    "vitest": "^4.0.18"
+  },
+  "peerDependencies": {
+    "@gears-frontx/framework": "*"
+  },
+  "peerDependenciesMeta": {
+    "@gears-frontx/framework": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "hai3",
+    "telemetry",
+    "analytics",
+    "events",
+    "autocapture",
+    "browser",
+    "sdk",
+    "typescript"
+  ],
+  "author": "HAI3",
+  "license": "Apache-2.0",
+  "sideEffects": false
+}
