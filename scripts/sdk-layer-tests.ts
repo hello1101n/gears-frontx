@@ -13,7 +13,7 @@
  */
 
 import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
+import path, { join } from 'path';
 
 interface TestResult {
   name: string;
