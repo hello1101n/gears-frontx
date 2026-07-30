@@ -173,6 +173,30 @@ export default [
     },
   },
 
+  // The example app consumes the gear through its public entry, exactly as an external user does.
+  {
+    files: ['packages/telemetry/examples/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@gears-frontx/*/src/**'],
+              message:
+                'MONOREPO VIOLATION: Import from package root, not internal paths.',
+            },
+            {
+              group: ['@/*'],
+              message:
+                'PACKAGE VIOLATION: Use relative imports within packages.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+
   // The envelope builders rewrite each record field in place to match the collector's wire format,
   // and the hooks manager dispatches a variadic tuple through a key-indexed handler map.
   {

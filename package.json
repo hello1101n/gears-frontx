@@ -12,13 +12,15 @@
   "workspaces": [
     "packages/*",
     "internal/*",
-    "packages/cli/template-sources/project/eslint-plugin-local"
+    "packages/cli/template-sources/project/eslint-plugin-local",
+    "packages/telemetry/examples/*"
   ],
   "scripts": {
     "generate:mfe-manifests": "npx tsx scripts/generate-mfe-manifests.ts",
     "dev": "npm run generate:mfe-manifests && npm run generate:colors && vite",
     "dev:mfe:demo": "cd src/mfe_packages/demo-mfe && npm run dev",
     "dev:mfe:blank": "cd src/mfe_packages/_blank-mfe && npm run dev",
+    "demo:telemetry": "npm run dev --workspace=@gears-frontx/telemetry-example-web",
     "dev:all": "npm run generate:mfe-manifests && npx tsx scripts/dev-all.ts",
     "check:mcp": "npx tsx packages/cli/template-sources/project/scripts/check-mcp.ts",
     "build": "npm run generate:mfe-manifests && npm run build:packages && npm run generate:colors && vite build",
@@ -39,7 +41,7 @@
     "type-check:packages": "npm run type-check:packages:sdk && npm run type-check:packages:framework && npm run type-check:packages:gears && npm run type-check:packages:react && npm run type-check:packages:studio && npm run type-check:packages:cli",
     "type-check:packages:sdk": "npm run type-check --workspace=@gears-frontx/state --workspace=@gears-frontx/screensets --workspace=@gears-frontx/api --workspace=@gears-frontx/i18n",
     "type-check:packages:framework": "npm run type-check --workspace=@gears-frontx/framework",
-    "type-check:packages:gears": "npm run type-check --workspace=@gears-frontx/telemetry",
+    "type-check:packages:gears": "npm run type-check --workspace=@gears-frontx/telemetry --workspace=@gears-frontx/telemetry-example-web",
     "type-check:packages:react": "npm run type-check --workspace=@gears-frontx/react",
     "type-check:packages:studio": "npm run type-check --workspace=@gears-frontx/studio",
     "type-check:packages:cli": "npm run type-check --workspace=@gears-frontx/cli",
